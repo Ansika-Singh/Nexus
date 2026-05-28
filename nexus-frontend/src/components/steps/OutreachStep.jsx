@@ -219,7 +219,7 @@ export function OutreachStep({ profiles, selected, userProfile, saveToHistory, o
                       {(() => {
                         const platColors = { LinkedIn: "#0A66C2", X: "#0f1419", Instagram: "#E1306C", Email: "#EA4335", GitHub: "#333333" };
                         
-                        const exactPlatforms = p.platform_urls ? Object.keys(p.platform_urls) : (p.platforms || ["LinkedIn"]);
+                        const exactPlatforms = (p.platform_urls && Object.keys(p.platform_urls).length > 0) ? Object.keys(p.platform_urls) : (p.platforms || ["LinkedIn"]);
                         const allPlatforms = [...new Set([...exactPlatforms, "Email"])];
                         
                         return allPlatforms.map(plat => {
