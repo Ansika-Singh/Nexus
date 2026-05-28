@@ -89,14 +89,27 @@ INDIAN_MOCK_PROFILES = [
 
 @app.route('/search', methods=['POST'])
 def search_people():
+    import random
     data = request.json
     query = data.get('query', '')
+    experience_level = data.get('experience_level', 'Any')
     colors = ["#2979FF", "#FF6B9D", "#FF8C42", "#845EF7", "#00BFA5"]
 
     try:
         # 1. Search Tavily for real results
-        optimized_query = f"{query} (site:linkedin.com/in/ OR site:github.com OR site:instagram.com)"
-        search_result = tavily_client.search(query=optimized_query, search_depth="basic", max_results=5)
+        exp_constraint = ""
+        if "Entry Level" in experience_level:
+            exp_constraint = ' ("junior" OR "student" OR "intern" OR "new grad") '
+        elif "Mid-Level" in experience_level:
+            exp_constraint = ' ("experienced" OR "manager") '
+        elif "Senior" in experience_level:
+            exp_constraint = ' ("senior" OR "director" OR "founder" OR "lead" OR "head") '
+            
+        random_keywords = ["award", "speaker", "open source", "startup", "featured", "blog", "portfolio", "talk", "project"]
+        randomizer = f' "{random.choice(random_keywords)}"'
+        
+        optimized_query = f"{query} {exp_constraint} {randomizer} (site:linkedin.com/in/ OR site:github.com OR site:twitter.com OR site:x.com OR site:instagram.com)"
+        search_result = tavily_client.search(query=optimized_query, search_depth="basic", max_results=7)
         results = search_result.get("results", [])
 
         if not results:
@@ -115,10 +128,11 @@ def search_people():
         - "tags": up to 2 technical tags related to their work (list of strings)
         - "match_reason": a short 3-7 word reason why they match the query (string)
         - "platform_urls": a dictionary mapping the platform name (e.g. "LinkedIn", "Instagram", "GitHub", "X") to their EXACT profile URL found in the search results
+        - "email": their email address if explicitly mentioned in the search text, else null
         - "match": an estimated match score out of 100 (integer between 50 and 100)
 
         Return ONLY a valid JSON array. No markdown, no code fences, no explanation.
-        Example: [{{"name": "Alice", "role": "Engineer", "tags": ["AI"], "match_reason": "Builds AI tools", "platform_urls": {{"LinkedIn": "https://linkedin.com/in/alice"}}, "match": 85}}]
+        Example: [{"name": "Alice", "role": "Engineer", "tags": ["AI"], "match_reason": "Builds AI tools", "platform_urls": {"LinkedIn": "https://linkedin.com/in/alice", "X": "https://x.com/alice"}, "email": "alice@gmail.com", "match": 85}]
         """
 
         result_text = get_gemini_response(prompt).strip()
@@ -149,10 +163,11 @@ def search_people():
                 "color": colors[i % len(colors)],
                 "match": int(p.get("match", 75)),
                 "role": p.get("role", "Professional"),
-                "tags": p.get("tags", [])[:2],
-                "match_reason": p.get("match_reason", "Relevant match"),
+                "tags": p.get("tags", []),
+                "match_reason": p.get("match_reason", ""),
                 "platforms": platforms,
                 "platform_urls": platform_urls,
+                "email": p.get("email")
             })
 
         return jsonify({"success": True, "profiles": profiles})

@@ -42,12 +42,14 @@ function buildSuggestions(profile) {
 
 export function SearchStep({ onNext, setProfiles, userProfile }) {
   const [query, setQuery] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("Any");
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
   const [animIn, setAnimIn] = useState(false);
   const [error, setError] = useState(null);
   useEffect(() => { setTimeout(() => setAnimIn(true), 50); }, []);
 
+  const EXPERIENCE_OPTIONS = ["Any", "Student / Entry Level (~18-24)", "Mid-Level Professional (~25-34)", "Senior / Executive (35+)"];
   const PHASES = ["Analyzing your semantic fingerprint...", "Searching LinkedIn, GitHub, Twitter...", "Computing similarity scores...", "Ranking your top matches..."];
 
   const handleSearch = async () => {
@@ -56,7 +58,7 @@ export function SearchStep({ onNext, setProfiles, userProfile }) {
     let phaseIndex = 0;
     const cycle = setInterval(() => { phaseIndex++; if (phaseIndex < PHASES.length) setPhase(phaseIndex); else clearInterval(cycle); }, 900);
     try {
-      const profiles = await apiSearchPeople(query, userProfile);
+      const profiles = await apiSearchPeople(query, userProfile, experienceLevel);
       clearInterval(cycle); setPhase(PHASES.length - 1);
       setTimeout(() => { setProfiles(profiles.length > 0 ? profiles : []); onNext(); }, 500);
     } catch (err) { clearInterval(cycle); setLoading(false); setError(err.message || "Search failed. Check the backend is running."); }
@@ -73,7 +75,20 @@ export function SearchStep({ onNext, setProfiles, userProfile }) {
         <div style={{ maxWidth: 560 }}>
           <ErrorBanner message={error} onDismiss={() => setError(null)} />
           <NexusInput value={query} onChange={e => setQuery(e.target.value)} placeholder="e.g. ML engineers at Razorpay, Bengaluru, or PhD students at IIT Delhi interested in LLMs..." type="textarea" rows={3} />
-          <div style={{ margin: "16px 0 24px" }}>
+          
+          <div style={{ margin: "16px 0" }}>
+            <div style={{ fontSize: 11, color: BRAND.muted, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Space Mono', monospace", marginBottom: 8 }}>Target Experience Level</div>
+            <div style={{ position: "relative" }}>
+              <select value={experienceLevel} onChange={e => setExperienceLevel(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: 12, background: "rgba(255,255,255,0.02)", border: `1px solid ${BRAND.border}`, color: BRAND.text, fontSize: 15, outline: "none", cursor: "pointer", appearance: "none", transition: "all 0.2s" }} onFocus={e => e.target.style.borderColor = BRAND.primary} onBlur={e => e.target.style.borderColor = BRAND.border}>
+                {EXPERIENCE_OPTIONS.map(opt => (
+                  <option key={opt} value={opt} style={{ background: "#0a0a0a", color: BRAND.text }}>{opt}</option>
+                ))}
+              </select>
+              <div style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: BRAND.muted }}>▼</div>
+            </div>
+          </div>
+
+          <div style={{ margin: "24px 0 24px" }}>
             <div style={{ fontSize: 10, color: BRAND.muted, letterSpacing: 3, textTransform: "uppercase", fontFamily: "'Space Mono', monospace", marginBottom: 10 }}>Try these</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {SUGGESTIONS.map(s => (

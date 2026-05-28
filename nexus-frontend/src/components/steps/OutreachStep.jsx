@@ -231,7 +231,10 @@ export function OutreachStep({ profiles, selected, userProfile, saveToHistory, o
                           } else if (plat === "X") url = `https://x.com/${handle}`;
                           else if (plat === "LinkedIn") url = `https://www.linkedin.com/in/${handle}`;
                           else if (plat === "Instagram") url = `https://www.instagram.com/${handle}/`;
-                          else if (plat === "Email") url = `mailto:${handle}@company.com?subject=Networking&body=${encodeURIComponent(currentMsg)}`;
+                          else if (plat === "Email") {
+                            const emailAddress = p.email || `${handle}@company.com`;
+                            url = `mailto:${emailAddress}?subject=Networking&body=${encodeURIComponent(currentMsg)}`;
+                          }
                           
                           const color = platColors[plat] || "#555555";
                           

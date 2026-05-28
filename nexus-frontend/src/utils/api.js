@@ -11,10 +11,10 @@ export async function apiBuildProfile(data) {
   return json.profile;
 }
 
-export async function apiSearchPeople(query, userProfile) {
+export async function apiSearchPeople(query, userProfile, experienceLevel = "Any") {
   const res = await fetch(`${API_BASE}/search`, {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query, user_profile: userProfile }),
+    body: JSON.stringify({ query, user_profile: userProfile, experience_level: experienceLevel }),
   });
   const json = await res.json();
   if (!json.success) throw new Error(json.error || "Search failed");
