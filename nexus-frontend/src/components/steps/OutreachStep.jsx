@@ -219,21 +219,25 @@ export function OutreachStep({ profiles, selected, userProfile, saveToHistory, o
                       {(() => {
                         const platColors = { LinkedIn: "#0A66C2", X: "#0f1419", Instagram: "#E1306C", Email: "#EA4335", GitHub: "#333333" };
                         
-                        const exactPlatforms = (p.platform_urls && Object.keys(p.platform_urls).length > 0) ? Object.keys(p.platform_urls) : (p.platforms || ["LinkedIn"]);
-                        const allPlatforms = [...new Set([...exactPlatforms, "Email"])];
+                        const exactPlatforms = (p.platform_urls && Object.keys(p.platform_urls).length > 0) ? Object.keys(p.platform_urls) : (p.platforms || []);
+                        const basePlatforms = ["LinkedIn", "GitHub", "X"];
+                        const allPlatforms = [...new Set([...exactPlatforms, ...basePlatforms])];
+                        if (p.email && p.email !== "null") {
+                          allPlatforms.push("Email");
+                        }
                         
                         return allPlatforms.map(plat => {
-                          const handle = (p.name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                          const searchQuery = encodeURIComponent(`${p.name} ${p.role || ""}`);
                           
                           let url = "";
                           if (p.platform_urls && p.platform_urls[plat]) {
                             url = p.platform_urls[plat];
-                          } else if (plat === "X") url = `https://x.com/${handle}`;
-                          else if (plat === "LinkedIn") url = `https://www.linkedin.com/in/${handle}`;
-                          else if (plat === "Instagram") url = `https://www.instagram.com/${handle}/`;
+                          } else if (plat === "X") url = `https://x.com/search?q=${searchQuery}&f=user`;
+                          else if (plat === "LinkedIn") url = `https://www.linkedin.com/search/results/all/?keywords=${searchQuery}`;
+                          else if (plat === "GitHub") url = `https://github.com/search?q=${searchQuery}&type=users`;
+                          else if (plat === "Instagram") url = `https://www.instagram.com/explore/tags/${encodeURIComponent((p.name || "").replace(/\s+/g, ""))}/`;
                           else if (plat === "Email") {
-                            const emailAddress = p.email || `${handle}@company.com`;
-                            url = `mailto:${emailAddress}?subject=Networking&body=${encodeURIComponent(currentMsg)}`;
+                            url = `mailto:${p.email}?subject=Networking&body=${encodeURIComponent(currentMsg)}`;
                           }
                           
                           const color = platColors[plat] || "#555555";
