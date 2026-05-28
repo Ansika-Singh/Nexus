@@ -1,0 +1,115 @@
+<h2 class="sr-only">Nexus build roadmap — 5 phases from API keys to launch</h2>
+
+<style>
+.road{padding:0;max-width:640px}
+.phase{margin-bottom:28px}
+.phase-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.phase-title{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.phase-sub{font-size:13px;color:var(--color-text-secondary);margin-left:38px;margin-bottom:8px}
+.tasks{margin-left:38px;display:flex;flex-direction:column;gap:6px}
+.task{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:var(--border-radius-md);border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary);cursor:pointer;transition:border-color .15s}
+.task:hover{border-color:var(--color-border-secondary)}
+.task input[type=checkbox]{margin-top:2px;flex-shrink:0;accent-color:var(--color-text-success);cursor:pointer}
+.task.done .task-label{color:var(--color-text-tertiary);text-decoration:line-through}
+.task-label{font-size:13px;color:var(--color-text-primary);line-height:1.5}
+.task-badge{margin-left:auto;flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.badge-free{background:var(--color-background-success);color:var(--color-text-success)}
+.badge-code{background:var(--color-background-info);color:var(--color-text-info)}
+.badge-deploy{background:var(--color-background-warning);color:var(--color-text-warning)}
+.progress-bar{height:4px;border-radius:2px;background:var(--color-border-tertiary);overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;border-radius:2px;background:var(--color-text-success);transition:width .3s}
+.progress-label{font-size:12px;color:var(--color-text-tertiary);margin-bottom:6px}
+</style>
+
+<div class="road">
+  <p class="progress-label" id="prog-label">0 of 18 tasks done</p>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-hdr">
+      <div class="phase-num c-teal" style="background:#E1F5EE;color:#0F6E56">1</div>
+      <span class="phase-title">Get your free API keys</span>
+    </div>
+    <p class="phase-sub">No credit card needed for any of these.</p>
+    <div class="tasks">
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Get Gemini API key — aistudio.google.com → "Get API key"</span><span class="task-badge badge-free">free</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Get Tavily API key — tavily.com → sign up → dashboard</span><span class="task-badge badge-free">free</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Get HuggingFace token — huggingface.co → Settings → Access Tokens</span><span class="task-badge badge-free">free</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Create a Supabase project — supabase.com → copy Project URL + anon key</span><span class="task-badge badge-free">free</span></label>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-hdr">
+      <div class="phase-num" style="background:#E6F1FB;color:#185FA5">2</div>
+      <span class="phase-title">Set up the frontend (React)</span>
+    </div>
+    <p class="phase-sub">This turns the animated JSX file into a real running website on your laptop.</p>
+    <div class="tasks">
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Install Node.js — nodejs.org → download LTS version</span><span class="task-badge badge-free">free</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Run: <code>npx create-react-app nexus</code> in terminal</span><span class="task-badge badge-code">terminal</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Replace <code>src/App.js</code> with your <code>nexus_animated.jsx</code> file</span><span class="task-badge badge-code">code</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Run <code>npm start</code> — site opens at localhost:3000</span><span class="task-badge badge-code">terminal</span></label>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-hdr">
+      <div class="phase-num" style="background:#FAEEDA;color:#854F0B">3</div>
+      <span class="phase-title">Set up the backend (Python/Flask)</span>
+    </div>
+    <p class="phase-sub">The AI brain — connects Gemini, Tavily, and HuggingFace together.</p>
+    <div class="tasks">
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Install Python 3.10+ — python.org</span><span class="task-badge badge-free">free</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Save the backend <code>app.py</code> + <code>requirements.txt</code> files I built</span><span class="task-badge badge-code">code</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Create <code>.env</code> file and paste your 3 API keys in</span><span class="task-badge badge-code">code</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Run <code>pip install -r requirements.txt</code> then <code>python app.py</code></span><span class="task-badge badge-code">terminal</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Test: visit localhost:5000/health — should see <code>{"status":"ok"}</code></span><span class="task-badge badge-code">test</span></label>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-hdr">
+      <div class="phase-num" style="background:#FBEAF0;color:#993556">4</div>
+      <span class="phase-title">Connect frontend ↔ backend</span>
+    </div>
+    <p class="phase-sub">Replace mock data in the JSX with real API calls — this is where it becomes a real AI agent.</p>
+    <div class="tasks">
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Update <code>API_BASE</code> in <code>nexus_animated.jsx</code> to <code>http://localhost:5000</code></span><span class="task-badge badge-code">code</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Test profile build → search → message flow end-to-end locally</span><span class="task-badge badge-code">test</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Fix any CORS errors (I'll help you with this)</span><span class="task-badge badge-code">code</span></label>
+    </div>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase">
+    <div class="phase-hdr">
+      <div class="phase-num" style="background:#EEEDFE;color:#3C3489">5</div>
+      <span class="phase-title">Deploy everything free</span>
+    </div>
+    <p class="phase-sub">Put it on the internet so anyone can use it — zero cost.</p>
+    <div class="tasks">
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Deploy backend to HuggingFace Spaces as a Docker app</span><span class="task-badge badge-deploy">deploy</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Add API keys as Secrets in HF Spaces settings</span><span class="task-badge badge-deploy">deploy</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Deploy frontend to Vercel — connect GitHub repo → auto-deploy</span><span class="task-badge badge-deploy">deploy</span></label>
+      <label class="task"><input type="checkbox" onchange="tick(this)"><span class="task-label">Update <code>API_BASE</code> to your live HF Spaces URL and redeploy</span><span class="task-badge badge-code">code</span></label>
+    </div>
+  </div>
+</div>
+
+<script>
+function tick(cb){
+  const task=cb.closest('.task');
+  task.classList.toggle('done',cb.checked);
+  const all=document.querySelectorAll('.task input[type=checkbox]');
+  const done=[...all].filter(c=>c.checked).length;
+  const total=all.length;
+  document.getElementById('prog-fill').style.width=(done/total*100)+'%';
+  document.getElementById('prog-label').textContent=done+' of '+total+' tasks done'+(done===total?' 🎉':'');
+}
+</script>
