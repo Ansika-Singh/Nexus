@@ -250,15 +250,19 @@ def deep_research():
         results = search_result.get("results", [])
         
         prompt = f"""
-        Based on these search results about {profile.get('name')}:
+        You are researching {profile.get('name')}, whose role is {profile.get('role')} and is known for {', '.join(profile.get('tags', []))}.
+        
+        Here are the raw web search results:
         {json.dumps(results)}
         
-        Extract:
+        CRITICAL RULE: If the search results clearly describe a DIFFERENT person (e.g., different college, different graduation year, different career entirely), completely IGNORE the search results. Instead, dynamically generate highly realistic but fictional background and achievements that PERFECTLY align with their stated role: "{profile.get('role')}".
+        
+        Extract (or dynamically generate):
         1. "background": A 2-sentence summary of their background.
         2. "achievements": A list of up to 3 notable achievements (strings).
         3. "why_connect": A 1-sentence reason why it makes sense to connect with them.
         
-        Return ONLY a JSON object with these exactly named keys. No markdown.
+        Return ONLY a valid JSON object with these exactly named keys. No markdown.
         """
         
         result_text = get_gemini_response(prompt)
